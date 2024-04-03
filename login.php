@@ -14,33 +14,52 @@
         <input type="text" placeholder="Nombre" name="nombre" id="nombre">
         <input type="password" placeholder="Contraseña" name="password" id="password">
         <button type="submit" class="button">Iniciar</button>
+        <div class="links">
+        <button type="button" onclick="window.location.href='./registro.php'" class="registro-button">Registrarse</button>
+          <a class="olvido" href="./contraseñaOlvidada.php">¿Olvidaste tu contraseña?</a>
+        </div>
       </form>
       <?php
-        require "./login-helper.php"; // Invoca la autenticación 
+        // Incluir la conexión a la base de datos y la función de autenticación
+        require "./conexion.php";
+        require "./login-helper.php";
 
+        // Verificar si se envió el formulario
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $usuario = $_POST['nombre'];
+            // Obtener el correo electrónico y la contraseña del formulario
+            $correo = $_POST['nombre'];
             $password = $_POST['password'];
 
-            $resultado = autentificar($usuario, $password);
+            // Query para obtener el usuario con el correo electrónico proporcionado
+            $query = "SELECT * FROM usuarios WHERE username='$correo'";
+            $result = mysqli_query($conn, $query);
 
-            if ($resultado) {
-                session_start();
-                $_SESSION["usuario"] = $resultado; 
+            // Verificar si se encontró un usuario con ese correo electrónico
+            if (mysqli_num_rows($result) > 0) {
+                $usuario = mysqli_fetch_assoc($result);
+                
+                // Verificar la contraseña ingresada con la contraseña en la base de datos
+                if (password_verify($password, $usuario['password_encrypted'])) {
+                    // Si la contraseña es correcta, iniciar la sesión y redirigir al usuario
+                    session_start();
+                    $_SESSION["usuario"] = $usuario;
 
-                // Redirigir al usuario dependiendo de su rol
-                if ($resultado["esAdmin"]) {
-                    header("Location: ./index.php"); 
+                    // Redirigir al usuario dependiendo de su rol
+                    if ($usuario["es_admin"]) {
+                        header("Location: ./index.php");
+                    } else {
+                        header("Location: ./user.php");
+                    }
+                    exit();
                 } else {
-                    header("Location: ./user.php"); 
+                    // Si la contraseña es incorrecta, mostrar un mensaje de error
+                    echo "<p class='error'>Credenciales incorrectas</p>";
                 }
-
-                exit(); 
             } else {
-                echo "<p class='error'>Usuario no autenticado</p>";
-                exit();
+                // Si no se encuentra ningún usuario con ese correo electrónico, mostrar un mensaje de error
+                echo "<p class='error'>No se encontró ningún usuario con ese correo electrónico</p>";
             }
-        }
+          }
       ?>
     </div>
   </div>

@@ -47,6 +47,19 @@ button:hover {
     opacity: 0.8;
 }
 
+.registro-button {
+    background-color: rgb(230, 22, 230); /* Color de fondo morado */
+    color: white; /* Color de texto blanco */
+    padding: 10px 20px; /* Espaciado interno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.registro-button:hover {
+    background-color: darkpurple; /* Cambia el color de fondo al pasar el cursor */
+}
+
 .error {
     background: #F2DEDE;
     color: #A94442;
@@ -54,4 +67,18 @@ button:hover {
     border-radius: 5px;
     margin: 10px 0;
     text-align: center;
+}
+
+.links {
+    text-align: center;
+    /* Centra los elementos horizontalmente */
+    margin-top: 10px;
+    /* Espacio superior */
+}
+
+.olvido {
+    display: block;
+    /* Convierte los enlaces en elementos de bloque */
+    margin-bottom: 5px;
+    /* Espacio entre los enlaces */
 }
